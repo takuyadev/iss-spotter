@@ -1,5 +1,10 @@
 // index.js
-const { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes } = require("./iss");
+const {
+  fetchMyIP,
+  fetchCoordsByIP,
+  fetchISSFlyOverTimes,
+  nextISSTimesForMyLocation,
+} = require("./iss");
 
 // fetchMyIP((error, ip) => {
 //   if (error) {
@@ -24,17 +29,34 @@ const { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes } = require("./iss");
 //   console.log("It worked! Returned address:", data);
 // });
 
-const coords = { latitude: "a", longitude: "-123.1207375" };
-fetchISSFlyOverTimes(coords, (error, data) => {
+// const coords = { latitude: "a", longitude: "-123.1207375" };
+// fetchISSFlyOverTimes(coords, (error, data) => {
+//   if (error) {
+//     console.log("Error received: " + error.message);
+//     return;
+//   }
+
+//   if (!data) {
+//     console.log("Invalid coordinates");
+//     return;
+//   }
+
+//   console.log(data);
+// });
+
+nextISSTimesForMyLocation((error, passTimes) => {
   if (error) {
-    console.log("Error received: " + error.message);
+    return console.log("It didn't work!", error);
+  }
+
+  if (!passTimes) {
+    console.log("Error getting times");
     return;
   }
 
-  if (!data) {
-    console.log("Invalid coordinates");
-    return;
+  // success, print out the deets!
+  for (const time of passTimes) {
+    const date = new Date(time.risetime * 1000);
+    console.log(`Next pass at ${date} for ${time.duration} seconds!`);
   }
-
-  console.log(data);
 });
